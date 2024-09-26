@@ -7,17 +7,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Upload File</title>
+    <title>Contact Manager</title>
     <link rel="stylesheet" href="~/css/UploadFIle.css" />
 </head>
 <body>
     <div class="header">
-        <h2>Upload CSV File</h2> 
+        <h2>Add New Contact</h2> 
     </div>
     <div class="container">
         <main role="main" class="pb-3">
-            
-            
+            <form asp-action="Create" method="post">
+                <div class="form-group">
+                    <label asp-for="Name">Name:</label>
+                    <input asp-for="Name" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="DateOfBirth">Date of Birth:</label>
+                    <input asp-for="DateOfBirth" type="date" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Married">Married:</label>
+                    <input asp-for="Married" type="checkbox" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Phone">Phone:</label>
+                    <input asp-for="Phone" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Salary">Salary:</label>
+                    <input asp-for="Salary" type="number" step="0.01" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Add Contact</button>
+            </form>
         </main>
     </div>
 </body>
