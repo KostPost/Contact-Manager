@@ -1,0 +1,15 @@
+﻿body {
+    margin: 0;
+    height: 100vh; /* Высота страницы */
+    display: flex;
+    flex-direction: column; /* Вертикальное направление для flexbox */
+}
+
+.header {
+    text-align: center; /* Центрирование текста */
+    margin-top: 20px; /* Отступ сверху */
+}
+
+.container {
+    flex-grow: 1; /* Занять оставшееся пространство */
+}
