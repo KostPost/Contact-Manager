@@ -1,13 +1,13 @@
 ﻿body {
     margin: 0;
-    height: 100vh; /* Высота страницы */
+    height: 100vh; 
     display: flex;
-    flex-direction: column; /* Вертикальное направление для flexbox */
+    flex-direction: column;
 }
 
 .header {
-    text-align: center; /* Центрирование текста */
-    margin-top: 20px; /* Отступ сверху */
+    text-align: center; 
+    margin-top: 20px;
 }
 
 .container {
