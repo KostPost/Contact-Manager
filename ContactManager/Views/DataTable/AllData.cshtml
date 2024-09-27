@@ -1,0 +1,31 @@
+﻿@* @model IEnumerable<ContactManager.Models.Contact>  *@
+@* *@
+@* @{ *@
+@*     ViewData["Title"] = "All Data"; *@
+@* } *@
+@* *@
+@* <h1>All Data</h1> *@
+@* *@
+@* <table class="table"> *@
+@*     <thead> *@
+@*     <tr> *@
+@*         <th>Name</th> *@
+@*         <th>Date of Birth</th> *@
+@*         <th>Married</th> *@
+@*         <th>Phone</th> *@
+@*         <th>Salary</th> *@
+@*     </tr> *@
+@*     </thead> *@
+@*     <tbody> *@
+@*     @foreach (var contact in Model) *@
+@*     { *@
+@*         <tr> *@
+@*             <td>@contact.Name</td> *@
+@*             <td>@contact.DateOfBirth.ToShortDateString()</td> *@
+@*             <td>@contact.Married</td> *@
+@*             <td>@contact.Phone</td> *@
+@*             <td>@contact.Salary.ToString("C")</td> *@
+@*         </tr> *@
+@*     } *@
+@*     </tbody> *@
+@* </table> *@

@@ -57,83 +57,100 @@ public class ContactController : Controller
 
 
     [HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> UploadCSV(IFormFile file)
-{
-    if (file != null && file.Length > 0)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UploadCSV(IFormFile file)
     {
+        if (file == null || file.Length == 0)
+        {
+            TempData["ErrorMessage"] = "No file uploaded.";
+            return View("UploadFile");
+        }
+
+        var contacts = new List<Contact>();
+        var errors = new List<string>();
+
         using (var reader = new StreamReader(file.OpenReadStream()))
         {
-            var lineNumber = 0;
-            var hasErrors = false; // Флаг для отслеживания ошибок
+            string line;
+            int lineNumber = 0;
 
-            while (!reader.EndOfStream)
+            while ((line = await reader.ReadLineAsync()) != null)
             {
-                var line = await reader.ReadLineAsync();
+                lineNumber++;
                 var values = line.Split(',');
 
-                // Пропускаем первую строку (заголовки)
-                if (lineNumber == 0)
+                if (lineNumber == 1) continue;
+
+                if (TryParseContact(values, lineNumber, out Contact contact, out List<string> validationErrors))
                 {
-                    lineNumber++;
-                    continue;
+                    contacts.Add(contact);
                 }
-
-                try
+                else
                 {
-                    var contact = new Contact
-                    {
-                        Name = values[0],
-                        DateOfBirth = DateTime.ParseExact(values[1], "yyyy-MM-dd", CultureInfo.InvariantCulture), // Убедитесь, что формат даты совпадает с CSV
-                        Married = bool.Parse(values[2]),
-                        Phone = values[3],
-                        Salary = decimal.Parse(values[4])
-                    };
-
-                    // Проверяем данные контакта с помощью сервиса ContactService
-                    if (_contactService.ValidateContact(contact, out List<string> errors))
-                    {
-                        // Если контакт прошел все проверки, добавляем его в базу данных
-                        _context.Add(contact);
-                    }
-                    else
-                    {
-                        // Логируем ошибки проверки и продолжаем обработку
-                        hasErrors = true;
-                        foreach (var error in errors)
-                        {
-                            ModelState.AddModelError("", $"Error on line {lineNumber}: {error}");
-                        }
-                    }
+                    errors.AddRange(validationErrors.Select(error => $"Error on line {lineNumber}: {error}"));
                 }
-                catch (FormatException ex)
-                {
-                    // Логируем ошибки формата
-                    hasErrors = true;
-                    ModelState.AddModelError("", $"Error parsing data on line {lineNumber}: {ex.Message}");
-                }
-
-                lineNumber++;
             }
-
-            // Сохраняем контакты в базу, если нет ошибок
-            if (!hasErrors)
-            {
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Contacts uploaded successfully!";
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Some contacts could not be uploaded due to errors. Please check the error messages.";
-            }
-
-            return RedirectToAction(nameof(UploadFile));
         }
+
+        if (errors.Any())
+        {
+            foreach (var error in errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+
+            TempData["ErrorMessage"] =
+                "Some contacts could not be uploaded due to errors. Please check the error messages.";
+        }
+        else
+        {
+            await _context.AddRangeAsync(contacts);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Contacts uploaded successfully!";
+        }
+
+        return View("UploadFile");
     }
 
-    TempData["ErrorMessage"] = "No file uploaded.";
-    return RedirectToAction(nameof(UploadFile));
-}
+    private bool TryParseContact(string[] values, int lineNumber, out Contact contact,
+        out List<string> validationErrors)
+    {
+        contact = null;
+        validationErrors = new List<string>();
+
+        try
+        {
+            contact = new Contact
+            {
+                Name = values[0],
+                DateOfBirth = DateTime.ParseExact(values[1], "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                Married = bool.Parse(values[2]),
+                Phone = values[3],
+                Salary = decimal.Parse(values[4])
+            };
+
+            if (!_contactService.ValidateContact(contact, out validationErrors))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        catch (FormatException ex)
+        {
+            validationErrors.Add($"Format error: {ex.Message}");
+        }
+        catch (IndexOutOfRangeException)
+        {
+            validationErrors.Add("Not enough data provided.");
+        }
+        catch (Exception ex)
+        {
+            validationErrors.Add($"Unexpected error: {ex.Message}");
+        }
+
+        return false;
+    }
 
 
     public async Task<IActionResult> Index()

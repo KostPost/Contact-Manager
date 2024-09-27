@@ -1,0 +1,110 @@
+﻿@model ContactListViewModel 
+
+@{
+    ViewData["Title"] = "All Data";
+}
+
+<h1>All Data</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>ID</th> <!-- Added ID Column -->
+        <th>
+            <a asp-action="DataTable" asp-route-sortOrder="@ViewBag.NameSortParam">Name</a>
+        </th>
+        <th>
+            <a asp-action="DataTable" asp-route-sortOrder="@ViewBag.DateSortParam">Date of Birth</a>
+        </th>
+        <th>
+            <a asp-action="DataTable" asp-route-sortOrder="@ViewBag.MarriedSortParam">Married</a>
+        </th>
+        <th>
+            <a asp-action="DataTable" asp-route-sortOrder="@ViewBag.PhoneSortParam">Phone</a>
+        </th>
+        <th>
+            <a asp-action="DataTable" asp-route-sortOrder="@ViewBag.SalarySortParam">Salary</a>
+        </th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var contact in Model.Contacts)
+    {
+        <tr>
+            <td>@contact.Id</td> <!-- Displaying ID -->
+            <td class="contact-name">@contact.Name</td>
+            <td class="contact-dob">@contact.DateOfBirth.ToShortDateString()</td>
+            <td class="contact-married">@contact.Married</td>
+            <td class="contact-phone">@contact.Phone</td>
+            <td class="contact-salary">@contact.Salary.ToString("C")</td>
+            <td>
+                <button class="btn btn-primary" onclick="toggleEdit(this)">Edit</button>
+                <form asp-action="Delete" asp-route-id="@contact.Id" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this contact?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+        <tr class="edit-row" style="display:none;">
+            <form asp-action="Edit" asp-route-id="@contact.Id" method="post">
+                <td>
+                    <input type="hidden" asp-for="@contact.Id" />
+                    <input type="text" asp-for="@contact.Name" class="form-control" />
+                </td>
+                <td>
+                    <input type="date" asp-for="@contact.DateOfBirth" class="form-control" />
+                </td>
+                <td>
+                    <input type="checkbox" asp-for="@contact.Married" />
+                </td>
+                <td>
+                    <input type="text" asp-for="@contact.Phone" class="form-control" />
+                </td>
+                <td>
+                    <input type="number" asp-for="@contact.Salary" class="form-control" step="0.01" />
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-danger" onclick="toggleEdit(this)">Cancel</button>
+                </td>
+            </form>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="@(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="DataTable" asp-route-pageNumber="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@section Scripts {
+    <script>
+        function toggleEdit(button) {
+            const row = button.closest('tr');
+            const editRow = row.nextElementSibling;
+
+            if (editRow.style.display === "none") {
+                editRow.style.display = "table-row";
+                button.innerText = "Cancel";
+            } else {
+                editRow.style.display = "none";
+                button.innerText = "Edit";
+            }
+        }
+    </script>
+}

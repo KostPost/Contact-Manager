@@ -1,3 +1,4 @@
+using ContactManager.Controllers;
 using ContactManager.Data;
 using ContactManager.Services;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ builder.Services.AddDbContext<ContactManagerDbContext>(options =>
 
 builder.Services.AddScoped<ContactService>();
 builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<DataTableController>();
 
 
 

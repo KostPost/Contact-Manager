@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "gDGkoYKgFlyV+wMdDBAekIG2I8voWVDp0Je6r8fSuC8=",
+  "Hash": "20mUYfW1ddlWqVbiVxMFqobMHw/pZN8gykELDDFI9bg=",
   "Source": "ContactManager",
   "BasePath": "_content/ContactManager",
   "Mode": "Default",
@@ -55,12 +55,12 @@
       "OriginalItemSpec": "P:\\ContactManager\\ContactManager\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\ContactManager.bundle.scp.css"
     },
     {
-      "Identity": "P:\\ContactManager\\ContactManager\\wwwroot\\css\\DataBase.css",
+      "Identity": "P:\\ContactManager\\ContactManager\\wwwroot\\css\\DataTable.css",
       "SourceId": "ContactManager",
       "SourceType": "Discovered",
       "ContentRoot": "P:\\ContactManager\\ContactManager\\wwwroot\\",
       "BasePath": "_content/ContactManager",
-      "RelativePath": "css/DataBase.css",
+      "RelativePath": "css/DataTable.css",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -71,7 +71,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\css\\DataBase.css"
+      "OriginalItemSpec": "wwwroot\\css\\DataTable.css"
     },
     {
       "Identity": "P:\\ContactManager\\ContactManager\\wwwroot\\css\\site.css",
